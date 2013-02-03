@@ -13,13 +13,15 @@
 #import "MatchInfo.h"
 
 @interface CardGameViewController ()
-@property (weak, nonatomic) IBOutlet UILabel *flipsLabel;
-@property (nonatomic) int flipCount;
-@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (strong, nonatomic) CardMatchingGame *game;
+@property (nonatomic) int flipCount;
+@property (strong, nonatomic) NSMutableArray *flipHistory;
+@property (weak, nonatomic) IBOutlet UILabel *flipsLabel;
+@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *lastFlipLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *gameModeControl;
+@property (weak, nonatomic) IBOutlet UISlider *historySlider;
 @end
 
 @implementation CardGameViewController
@@ -30,10 +32,24 @@
     return _game;
 }
 
+- (NSMutableArray *)flipHistory
+{
+    if (!_flipHistory) _flipHistory = [[NSMutableArray alloc] init];
+    return _flipHistory;
+}
+
 - (void)setCardButtons:(NSArray *)cardButtons
 {
     _cardButtons = cardButtons;
     [self updateUI];
+}
+
+- (void)viewDidLoad
+{
+    int historySliderCount = self.flipHistory.count;
+    self.historySlider.maximumValue = historySliderCount == 0 ? 0 : historySliderCount -1;
+    self.historySlider.minimumValue = 0;
+    self.historySlider.value = self.historySlider.minimumValue;    
 }
 
 - (void)updateUI
@@ -46,6 +62,7 @@
         [cardButton setTitle:card.contents forState:UIControlStateSelected];
         [cardButton setTitle:card.contents forState:UIControlStateSelected|UIControlStateDisabled];
         [cardButton setImage:(card.isFaceUp ? nil : cardBackImage) forState:UIControlStateNormal];
+        //[cardButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         cardButton.layer.cornerRadius = 7.0;
         cardButton.clipsToBounds = YES;
         cardButton.selected = card.isFaceUp;
@@ -53,6 +70,10 @@
         cardButton.alpha = card.isUnplayable ? 0.3 : 1.0;
     }
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
+    int historySliderCount = self.flipHistory.count;
+    self.historySlider.maximumValue = historySliderCount == 0 ? 0 : historySliderCount;
+    self.historySlider.minimumValue = 0;
+    self.historySlider.value = self.historySlider.maximumValue;
 }
 
 - (void)setFlipCount:(int)flipCount
@@ -82,6 +103,9 @@
         case FLIPPED_UP:
             lastFlipLabel = [NSString stringWithFormat:@"Flipped up %@", card.contents];
             break;
+        case FLIPPED_DOWN:
+            lastFlipLabel = [NSString stringWithFormat:@"Flipped down %@", card.contents];
+            break;
         case MATCH_NONE:
             lastFlipLabel = [NSString stringWithFormat:@"No match! %@ %d points", [self concatCardContents:matchInfo.cardsConsidered], matchInfo.score];
             break;
@@ -104,12 +128,15 @@
     
     [self.game flipCardAtIndex:[self.cardButtons indexOfObject:sender]];
     self.lastFlipLabel.text = [self formatLastFlipLabel:sender];
+    [self.flipHistory addObject:self.lastFlipLabel.text];
+    self.lastFlipLabel.alpha = 1.0;
     self.flipCount++;
     [self updateUI];
 }
 
 - (IBAction)dealCards:(UIButton *)sender {
     self.game = nil;
+    self.flipHistory = nil;
     self.flipCount = 0;
     self.lastFlipLabel.text = @"";
     self.gameModeControl.enabled = YES;
@@ -118,6 +145,13 @@
 
 - (IBAction)gameModeChanged:(UISegmentedControl *)sender {
     self.game.cardsToMatch = sender.selectedSegmentIndex+2;
+}
+
+- (IBAction)historySliderValueChanged:(UISlider *)sender {
+    if (self.flipHistory.count > 0) {
+        self.lastFlipLabel.alpha = (sender.value == sender.maximumValue) ? 1.0 : 0.3;
+        self.lastFlipLabel.text = sender.value < 1 ? @"Game start!" : self.flipHistory[(int)sender.value-1];
+    }
 }
 
 @end
