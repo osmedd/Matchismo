@@ -21,9 +21,18 @@
 
 @implementation CardGameViewController
 
+- (GameResult *)gameResult
+{
+    if (!_gameResult) _gameResult = [[GameResult alloc] init];
+    return _gameResult;
+}
+
 - (CardMatchingGame *)game
 {
-    if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init] usingCardsToMatch:2];
+    if (!_game) {
+        _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init] usingCardsToMatch:2];
+        self.gameResult.gameType = @"Match";
+    }
     return _game;
 }
 
@@ -136,10 +145,12 @@
     self.lastFlipLabel.alpha = 1.0;
     self.flipCount++;
     [self updateUI];
+    self.gameResult.score = self.game.score;
 }
 
 - (IBAction)dealCards:(UIButton *)sender {
     self.game = nil;
+    self.gameResult = nil;
     self.flipHistory = nil;
     self.flipCount = 0;
     self.lastFlipLabel.text = @"";

@@ -35,7 +35,10 @@
 
 - (CardMatchingGame *)game
 {
-    if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[SetCardDeck alloc] init] usingCardsToMatch:3];
+    if (!_game) {
+        _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[SetCardDeck alloc] init] usingCardsToMatch:3];
+        self.gameResult.gameType = @"Set";
+    }
     return _game;
 }
 
