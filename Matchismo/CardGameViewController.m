@@ -13,22 +13,17 @@
 #import "MatchInfo.h"
 
 @interface CardGameViewController ()
-@property (strong, nonatomic) CardMatchingGame *game;
 @property (nonatomic) int flipCount;
-@property (strong, nonatomic) NSMutableArray *flipHistory;
 @property (weak, nonatomic) IBOutlet UILabel *flipsLabel;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
-@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *lastFlipLabel;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *gameModeControl;
-@property (weak, nonatomic) IBOutlet UISlider *historySlider;
 @end
 
 @implementation CardGameViewController
 
 - (CardMatchingGame *)game
 {
-    if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init] usingCardsToMatch:self.gameModeControl.selectedSegmentIndex+2];
+    if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init] usingCardsToMatch:2];
     return _game;
 }
 
@@ -82,53 +77,62 @@
     self.flipsLabel.text = [NSString stringWithFormat:@"Flips: %d", self.flipCount];
 }
 
-- (NSString *)concatCardContents:(NSArray *)cardList
+- (NSAttributedString *)getCardContents:(Card *)card
 {
-    NSMutableArray *contentList = [[NSMutableArray alloc] init];
-    
-    for (Card *card in cardList) {
-        [contentList addObject:card.contents];
-    }
-    
-    return [contentList componentsJoinedByString:@""];
+    NSMutableAttributedString *contents = [[NSMutableAttributedString alloc] initWithString:card.contents];
+    return contents;
 }
 
-- (NSString *)formatLastFlipLabel:(UIButton *)sender
+- (NSAttributedString *)concatCardContents:(NSArray *)cardList
 {
-    NSString *lastFlipLabel = nil;
+    NSMutableAttributedString *contents = [[NSMutableAttributedString alloc] init];
+    
+    int count = 0;
+    for (Card *card in cardList) {
+        if (count++ > 0) {
+            [contents appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+        }
+        [contents appendAttributedString:[self getCardContents:card]];
+    }
+    
+    return contents;
+}
+
+- (NSAttributedString *)formatLastFlipLabel:(UIButton *)sender
+{
+    NSMutableAttributedString *contents = [[NSMutableAttributedString alloc] init];
     MatchInfo *matchInfo = self.game.lastMatchInfo;
     Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:sender]];
     
     switch (matchInfo.matchType) {
         case FLIPPED_UP:
-            lastFlipLabel = [NSString stringWithFormat:@"Flipped up %@", card.contents];
+            [contents appendAttributedString:[[NSAttributedString alloc] initWithString:@"Flipped up "]];
+            [contents appendAttributedString:[self getCardContents:card]];
             break;
         case FLIPPED_DOWN:
-            lastFlipLabel = [NSString stringWithFormat:@"Flipped down %@", card.contents];
+            [contents appendAttributedString:[[NSAttributedString alloc] initWithString:@"Flipped down "]];
+            [contents appendAttributedString:[self getCardContents:card]];
             break;
         case MATCH_NONE:
-            lastFlipLabel = [NSString stringWithFormat:@"No match! %@ %d points", [self concatCardContents:matchInfo.cardsConsidered], matchInfo.score];
-            break;
-        case MATCH_RANK:
-        case MATCH_SUIT:
-            lastFlipLabel = [NSString stringWithFormat:@"Matched! %@ %d points", [self concatCardContents:matchInfo.matches], matchInfo.score];
+            [contents appendAttributedString:[[NSAttributedString alloc] initWithString:@"No match! "]];
+            [contents appendAttributedString:[self concatCardContents:matchInfo.cardsConsidered]];
+            [contents appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" (%d)", matchInfo.score]]];
             break;
         default:
+            [contents appendAttributedString:[[NSAttributedString alloc] initWithString:@"Match! "]];
+            [contents appendAttributedString:[self concatCardContents:matchInfo.cardsConsidered]];
+            [contents appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" (%d)", matchInfo.score]]];
             break;
     }
     
-    return lastFlipLabel;
+    return contents;
 }
 
 - (IBAction)flipCard:(UIButton *)sender
 {
-    if (self.flipCount == 0) {
-        self.gameModeControl.enabled = NO;
-    }
-    
     [self.game flipCardAtIndex:[self.cardButtons indexOfObject:sender]];
-    self.lastFlipLabel.text = [self formatLastFlipLabel:sender];
-    [self.flipHistory addObject:self.lastFlipLabel.text];
+    self.lastFlipLabel.attributedText = [self formatLastFlipLabel:sender];
+    [self.flipHistory addObject:self.lastFlipLabel.attributedText];
     self.lastFlipLabel.alpha = 1.0;
     self.flipCount++;
     [self updateUI];
@@ -139,18 +143,13 @@
     self.flipHistory = nil;
     self.flipCount = 0;
     self.lastFlipLabel.text = @"";
-    self.gameModeControl.enabled = YES;
     [self updateUI];
-}
-
-- (IBAction)gameModeChanged:(UISegmentedControl *)sender {
-    self.game.cardsToMatch = sender.selectedSegmentIndex+2;
 }
 
 - (IBAction)historySliderValueChanged:(UISlider *)sender {
     if (self.flipHistory.count > 0) {
         self.lastFlipLabel.alpha = (sender.value == sender.maximumValue) ? 1.0 : 0.3;
-        self.lastFlipLabel.text = sender.value < 1 ? @"Game start!" : self.flipHistory[(int)sender.value-1];
+        self.lastFlipLabel.attributedText = sender.value < 1 ? [[NSAttributedString alloc] initWithString:@"Game start!"] : self.flipHistory[(int)sender.value-1];
     }
 }
 

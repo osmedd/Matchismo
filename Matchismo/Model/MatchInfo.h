@@ -14,8 +14,14 @@ typedef enum {
     FLIPPED_UP,
     FLIPPED_DOWN,
     MATCH_NONE,
+    // "Card Matching" game match types
     MATCH_SUIT,
-    MATCH_RANK
+    MATCH_RANK,
+    // "Set" game match types
+    MATCH_NUMBER,
+    MATCH_SYMBOL,
+    MATCH_SHADING,
+    MATCH_COLOR
 } MATCH_TYPE;
 
 @property (nonatomic) MATCH_TYPE matchType;

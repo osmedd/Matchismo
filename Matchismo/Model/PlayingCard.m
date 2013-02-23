@@ -30,7 +30,7 @@
         }
     }
     
-    int maxMatchCount = otherCards.count + 1;
+    int maxMatchCount = [otherCards count] + 1;
     
     if (rankMatchCount == maxMatchCount) { // 0.235% chance
         matchInfo.matchType = MATCH_RANK;
@@ -76,7 +76,7 @@
 
 - (void)setSuit:(NSString *)suit
 {
-    if ([[PlayingCard validSuits] containsObject:suit]) {
+    if ([[[self class] validSuits] containsObject:suit]) {
         _suit = suit;
     }
 }
@@ -97,7 +97,7 @@
 
 - (void)setRank:(NSUInteger)rank
 {
-    if (rank <= [PlayingCard maxRank]) {
+    if (rank <= [[self class] maxRank]) {
         _rank = rank;
     }
 }

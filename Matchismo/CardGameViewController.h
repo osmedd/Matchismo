@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CardMatchingGame.h"
 
 @interface CardGameViewController : UIViewController
-
+{
+    CardMatchingGame *_game;
+}
+- (NSArray *)cardButtons;
+@property (strong, nonatomic) CardMatchingGame *game;
+@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
+@property (strong, nonatomic) NSMutableArray *flipHistory;
+@property (weak, nonatomic) IBOutlet UISlider *historySlider;
 @end
