@@ -9,7 +9,6 @@
 #import "SetGameViewController.h"
 #import "SetCardDeck.h"
 #import "SetCard.h"
-#import "CardMatchingGame.h"
 
 @interface SetGameViewController ()
 @end
@@ -33,13 +32,24 @@
     return self;
 }
 
-- (CardMatchingGame *)game
+- (NSUInteger)startingCardCount
 {
-    if (!_game) {
-        _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[SetCardDeck alloc] init] usingCardsToMatch:3];
-        self.gameResult.gameType = @"Set";
-    }
-    return _game;
+    return 24;
+}
+
+- (NSUInteger)cardsToMatch
+{
+    return 3;
+}
+
+- (NSString *)gameType
+{
+    return @"Set";
+}
+
+- (Deck *)createDeck
+{
+    return [[SetCardDeck alloc] init];
 }
 
 - (NSAttributedString *)getCardContents:(SetCard *)card
@@ -93,8 +103,12 @@
 
 - (void)updateUI
 {
-    for (UIButton *cardButton in self.cardButtons) {
-        Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
+    [super updateUI];
+    
+    NSArray *cardButtons = [self getCardButtons];
+    
+    for (UIButton *cardButton in cardButtons) {
+        Card *card = [self.game cardAtIndex:[cardButtons indexOfObject:cardButton]];
         //[cardButton setAttributedTitle:[self getCardContents:(SetCard *)card] forState:UIControlStateSelected];
         [cardButton setAttributedTitle:[self getCardContents:(SetCard *)card] forState:UIControlStateNormal];
         cardButton.backgroundColor = (card.isFaceUp ? [UIColor grayColor] : nil);
@@ -104,11 +118,6 @@
         cardButton.enabled = !card.isUnplayable;
         cardButton.alpha = card.isUnplayable ? 0.0 : 1.0;
     }
-    self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
-    int historySliderCount = [self.flipHistory count];
-    self.historySlider.maximumValue = historySliderCount == 0 ? 0 : historySliderCount;
-    self.historySlider.minimumValue = 0;
-    self.historySlider.value = self.historySlider.maximumValue;
 }
 
 @end

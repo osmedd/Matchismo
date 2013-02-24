@@ -6,14 +6,16 @@
 //  Copyright (c) 2013 InterGuide Communications, Inc. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
 #import "CardGameViewController.h"
-#import "PlayingCardDeck.h"
 #import "CardMatchingGame.h"
 #import "MatchInfo.h"
 
 @interface CardGameViewController ()
+@property (strong, nonatomic) GameResult *gameResult;
 @property (nonatomic) int flipCount;
+@property (strong, nonatomic) NSMutableArray *flipHistory;
+@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
+@property (weak, nonatomic) IBOutlet UISlider *historySlider;
 @property (weak, nonatomic) IBOutlet UILabel *flipsLabel;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (weak, nonatomic) IBOutlet UILabel *lastFlipLabel;
@@ -21,20 +23,29 @@
 
 @implementation CardGameViewController
 
+- (NSArray *)getCardButtons
+{
+    return self.cardButtons;
+}
+
 - (GameResult *)gameResult
 {
-    if (!_gameResult) _gameResult = [[GameResult alloc] init];
+    if (!_gameResult) {
+        _gameResult = [[GameResult alloc] init];
+        _gameResult.gameType = [self gameType];
+    }
     return _gameResult;
 }
 
 - (CardMatchingGame *)game
 {
     if (!_game) {
-        _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init] usingCardsToMatch:2];
-        self.gameResult.gameType = @"Match";
+        _game = [[CardMatchingGame alloc] initWithCardCount:self.startingCardCount usingDeck:[self createDeck] usingCardsToMatch:self.cardsToMatch];
     }
     return _game;
 }
+
+- (Deck *)createDeck { return nil; } // abstract
 
 - (NSMutableArray *)flipHistory
 {
@@ -45,7 +56,7 @@
 - (void)setCardButtons:(NSArray *)cardButtons
 {
     _cardButtons = cardButtons;
-    [self updateUI];
+    //[self updateUI];
 }
 
 - (void)viewDidLoad
@@ -53,26 +64,13 @@
     int historySliderCount = self.flipHistory.count;
     self.historySlider.maximumValue = historySliderCount == 0 ? 0 : historySliderCount -1;
     self.historySlider.minimumValue = 0;
-    self.historySlider.value = self.historySlider.minimumValue;    
+    self.historySlider.value = self.historySlider.minimumValue;
+    
+    [self updateUI];
 }
 
 - (void)updateUI
 {
-   
-    UIImage *cardBackImage = [UIImage imageNamed:@"knights_cardback.png"];
-    
-    for (UIButton *cardButton in self.cardButtons) {
-        Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
-        [cardButton setTitle:card.contents forState:UIControlStateSelected];
-        [cardButton setTitle:card.contents forState:UIControlStateSelected|UIControlStateDisabled];
-        [cardButton setImage:(card.isFaceUp ? nil : cardBackImage) forState:UIControlStateNormal];
-        //[cardButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-        cardButton.layer.cornerRadius = 7.0;
-        cardButton.clipsToBounds = YES;
-        cardButton.selected = card.isFaceUp;
-        cardButton.enabled = !card.isUnplayable;
-        cardButton.alpha = card.isUnplayable ? 0.3 : 1.0;
-    }
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
     int historySliderCount = self.flipHistory.count;
     self.historySlider.maximumValue = historySliderCount == 0 ? 0 : historySliderCount;
