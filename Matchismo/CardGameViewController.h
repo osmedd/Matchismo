@@ -11,12 +11,9 @@
 #import "GameResult.h"
 
 @interface CardGameViewController : UIViewController
-- (Deck *)createDeck;
-- (void)updateUI; // temporary while refactoring
-- (NSArray *)getCardButtons; // temporary while refactoring
-@property (strong, nonatomic) CardMatchingGame *game; // temporary, make private after updateUI is all in base class
 
-//- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card; // abstract
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card; // abstract
+- (Deck *)createDeck;
 
 @property (readonly, nonatomic) NSUInteger startingCardCount; // abstract
 @property (readonly, nonatomic) NSUInteger cardsToMatch; // abstract

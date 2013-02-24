@@ -54,7 +54,7 @@
 
 - (NSAttributedString *)getCardContents:(SetCard *)card
 {
-    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc]initWithString:card.contents];
+    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:card.contents];
     NSRange range = [[attrStr string] rangeOfString: card.contents];
     UIColor *color = nil;
     
@@ -101,23 +101,26 @@
     return attrStr;
 }
 
-- (void)updateUI
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
 {
-    [super updateUI];
-    
-    NSArray *cardButtons = [self getCardButtons];
-    
-    for (UIButton *cardButton in cardButtons) {
-        Card *card = [self.game cardAtIndex:[cardButtons indexOfObject:cardButton]];
-        //[cardButton setAttributedTitle:[self getCardContents:(SetCard *)card] forState:UIControlStateSelected];
-        [cardButton setAttributedTitle:[self getCardContents:(SetCard *)card] forState:UIControlStateNormal];
-        cardButton.backgroundColor = (card.isFaceUp ? [UIColor grayColor] : nil);
-        [cardButton setImageEdgeInsets:UIEdgeInsetsMake(1, -1, -1, -1)];
-        cardButton.clipsToBounds = YES;
-        cardButton.selected = card.isFaceUp;
-        cardButton.enabled = !card.isUnplayable;
-        cardButton.alpha = card.isUnplayable ? 0.0 : 1.0;
-    }
+    // needs to be implemented
 }
+
+//- (void)updateUI
+//{
+//    NSArray *cardButtons = [self getCardButtons];
+//    
+//    for (UIButton *cardButton in cardButtons) {
+//        Card *card = [self.game cardAtIndex:[cardButtons indexOfObject:cardButton]];
+//        //[cardButton setAttributedTitle:[self getCardContents:(SetCard *)card] forState:UIControlStateSelected];
+//        [cardButton setAttributedTitle:[self getCardContents:(SetCard *)card] forState:UIControlStateNormal];
+//        cardButton.backgroundColor = (card.isFaceUp ? [UIColor grayColor] : nil);
+//        [cardButton setImageEdgeInsets:UIEdgeInsetsMake(1, -1, -1, -1)];
+//        cardButton.clipsToBounds = YES;
+//        cardButton.selected = card.isFaceUp;
+//        cardButton.enabled = !card.isUnplayable;
+//        cardButton.alpha = card.isUnplayable ? 0.0 : 1.0;
+//    }
+//}
 
 @end

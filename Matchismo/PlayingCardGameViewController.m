@@ -9,6 +9,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "PlayingCardGameViewController.h"
 #import "PlayingCardDeck.h"
+#import "PlayingCard.h"
+#import "PlayingCardCollectionViewCell.h"
 
 @interface PlayingCardGameViewController ()
 
@@ -36,25 +38,18 @@
     return [[PlayingCardDeck alloc] init];
 }
 
-- (void)updateUI
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
 {
-    [super updateUI];
-    
-    UIImage *cardBackImage = [UIImage imageNamed:@"knights_cardback.png"];
-    NSArray *cardButtons = [self getCardButtons];
-    
-    for (UIButton *cardButton in cardButtons) {
-        Card *card = [self.game cardAtIndex:[cardButtons indexOfObject:cardButton]];
-        [cardButton setTitle:card.contents forState:UIControlStateSelected];
-        [cardButton setTitle:card.contents forState:UIControlStateSelected|UIControlStateDisabled];
-        [cardButton setImage:(card.isFaceUp ? nil : cardBackImage) forState:UIControlStateNormal];
-        //[cardButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-        cardButton.layer.cornerRadius = 7.0;
-        cardButton.clipsToBounds = YES;
-        cardButton.selected = card.isFaceUp;
-        cardButton.enabled = !card.isUnplayable;
-        cardButton.alpha = card.isUnplayable ? 0.3 : 1.0;
-    }
+    if ([cell isKindOfClass:[PlayingCardCollectionViewCell class]]) {
+        PlayingCardView *playingCardView = ((PlayingCardCollectionViewCell *)cell).playingCardView;
+        if ([card isKindOfClass:[PlayingCard class]]) {
+            PlayingCard *playingCard = (PlayingCard *)card;
+            playingCardView.rank = playingCard.rank;
+            playingCardView.suit = playingCard.suit;
+            playingCardView.faceUp = playingCard.isFaceUp;
+            playingCardView.alpha = playingCard.isUnplayable ? 0.3 : 1.0;
+        }
+    }    
 }
 
 @end
