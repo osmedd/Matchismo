@@ -24,6 +24,8 @@
 
 @implementation CardGameViewController
 
+#define VIEW_CARD_SECTION 0
+
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     return 1;
@@ -32,19 +34,19 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
-    return self.startingCardCount;
+    return self.game.cardsInPlay;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PlayingCard" forIndexPath:indexPath];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.viewCellID forIndexPath:indexPath];
     Card *card = [self.game cardAtIndex:indexPath.item];
-    [self updateCell:cell usingCard:card];
+    [self updateCell:cell usingCard:card animate:NO];
     return cell;
 }
 
-- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate
 {
     // abstract
 }
@@ -84,19 +86,40 @@
     [self updateUI];
 }
 
+- (void)removeCardMatches
+{
+    NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    for (NSUInteger i = 0; i < [self.cardCollectionView numberOfItemsInSection:VIEW_CARD_SECTION]; i++) {
+        Card *card = [self.game cardAtIndex:i];
+        if (card.isFaceUp && card.isUnplayable) {
+            [indexes addIndex:i];
+            [indexPaths addObject:[NSIndexPath indexPathForItem:i inSection:VIEW_CARD_SECTION]];
+        }
+    }
+    if ([indexes count]) {
+        [self.game deleteCardsAtIndexes:indexes];
+        [self.cardCollectionView deleteItemsAtIndexPaths:indexPaths];
+    }
+}
+
 - (void)updateUI
 {
     for (UICollectionViewCell *cell in [self.cardCollectionView visibleCells]) {
         NSIndexPath *indexPath = [self.cardCollectionView indexPathForCell:cell];
         Card *card = [self.game cardAtIndex:indexPath.item];
-        [self updateCell:cell usingCard:card];
+        [self updateCell:cell usingCard:card animate:YES];
     }
-    
+
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
     int historySliderCount = self.flipHistory.count;
     self.historySlider.maximumValue = historySliderCount == 0 ? 0 : historySliderCount;
     self.historySlider.minimumValue = 0;
     self.historySlider.value = self.historySlider.maximumValue;
+    
+    if (self.shouldRemoveCardMatches) {
+        [self removeCardMatches];
+    }
 }
 
 - (void)setFlipCount:(int)flipCount
@@ -188,13 +211,16 @@
     self.flipHistory = nil;
     self.flipCount = 0;
     self.lastFlipLabel.text = @"";
+    [self.cardCollectionView reloadData];
     [self updateUI];
 }
 
 - (IBAction)historySliderValueChanged:(UISlider *)sender {
     if (self.flipHistory.count > 0) {
         self.lastFlipLabel.alpha = (sender.value == sender.maximumValue) ? 1.0 : 0.3;
-        self.lastFlipLabel.attributedText = sender.value < 1 ? [[NSAttributedString alloc] initWithString:@"Game start!"] : self.flipHistory[(int)sender.value-1];
+        int historyIndex = (int)round(sender.value);
+        //NSLog(@"Showing flip history entry: %d (out of %d entries)", historyIndex, [self.flipHistory count]);
+        self.lastFlipLabel.attributedText = self.flipHistory[historyIndex];
     }
 }
 

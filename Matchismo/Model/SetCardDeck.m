@@ -16,13 +16,13 @@
     self = [super init];
     
     if (self) {
-        for (NSString *suit in [SetCard validSuits]) {
-            for (NSUInteger rank = 1; rank <= [SetCard maxRank]; rank++) {
+        for (NSUInteger symbol = 1; symbol <= [SetCard maxSymbol]; symbol++) {
+            for (NSUInteger number = 1; number <= [SetCard maxNumber]; number++) {
                 for (NSUInteger color = 1; color <= [SetCard maxColor]; color++) {
                     for (NSUInteger shading = 1; shading <= [SetCard maxShading]; shading++) {
                         SetCard *card = [[SetCard alloc] init];
-                        card.rank = rank;
-                        card.suit = suit;
+                        card.number = number;
+                        card.symbol = symbol;
                         card.color = color;
                         card.shading = shading;
                         [self addCard:card atTop:YES];

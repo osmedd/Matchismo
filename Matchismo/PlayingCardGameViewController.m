@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 InterGuide Communications, Inc. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
 #import "PlayingCardGameViewController.h"
 #import "PlayingCardDeck.h"
 #import "PlayingCard.h"
@@ -20,7 +19,7 @@
 
 - (NSUInteger)startingCardCount
 {
-    return 16;
+    return 22;
 }
 
 - (NSUInteger)cardsToMatch
@@ -33,12 +32,22 @@
     return @"Match";
 }
 
+- (NSString *)viewCellID
+{
+    return @"PlayingCard";
+}
+
+- (BOOL)shouldRemoveCardMatches
+{
+    return NO;
+}
+
 - (Deck *)createDeck
 {
     return [[PlayingCardDeck alloc] init];
 }
 
-- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate
 {
     if ([cell isKindOfClass:[PlayingCardCollectionViewCell class]]) {
         PlayingCardView *playingCardView = ((PlayingCardCollectionViewCell *)cell).playingCardView;
@@ -46,7 +55,18 @@
             PlayingCard *playingCard = (PlayingCard *)card;
             playingCardView.rank = playingCard.rank;
             playingCardView.suit = playingCard.suit;
-            playingCardView.faceUp = playingCard.isFaceUp;
+            if (playingCardView.faceUp != playingCard.isFaceUp) {
+                if (animate) {
+                    [UIView transitionWithView:playingCardView
+                                      duration:0.5
+                                       options:UIViewAnimationOptionTransitionFlipFromLeft
+                                    animations:^{
+                                        playingCardView.faceUp = playingCard.isFaceUp;
+                                    } completion:NULL];
+                } else {
+                    playingCardView.faceUp = playingCard.isFaceUp;
+                }
+            }
             playingCardView.alpha = playingCard.isUnplayable ? 0.3 : 1.0;
         }
     }    

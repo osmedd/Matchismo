@@ -8,11 +8,15 @@
 
 #import "PlayingCard.h"
 
-@interface SetCard : PlayingCard
+@interface SetCard : Card
 
+@property (nonatomic) NSUInteger symbol;
+@property (nonatomic) NSUInteger number;
 @property (nonatomic) NSUInteger color;
 @property (nonatomic) NSUInteger shading;
 
++ (NSUInteger)maxSymbol;
++ (NSUInteger)maxNumber;
 + (NSUInteger)maxColor;
 + (NSUInteger)maxShading;
 

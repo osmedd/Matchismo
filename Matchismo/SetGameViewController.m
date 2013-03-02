@@ -7,6 +7,7 @@
 //
 
 #import "SetGameViewController.h"
+#import "SetCardCollectionViewCell.h"
 #import "SetCardDeck.h"
 #import "SetCard.h"
 
@@ -34,7 +35,7 @@
 
 - (NSUInteger)startingCardCount
 {
-    return 24;
+    return 12;
 }
 
 - (NSUInteger)cardsToMatch
@@ -47,6 +48,16 @@
     return @"Set";
 }
 
+- (NSString *)viewCellID
+{
+    return @"SetCard";
+}
+
+- (BOOL)shouldRemoveCardMatches
+{
+    return YES;
+}
+
 - (Deck *)createDeck
 {
     return [[SetCardDeck alloc] init];
@@ -54,56 +65,41 @@
 
 - (NSAttributedString *)getCardContents:(SetCard *)card
 {
-    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:card.contents];
-    NSRange range = [[attrStr string] rangeOfString: card.contents];
-    UIColor *color = nil;
-    
-    switch (card.color) {
-        case 1:
-            color = [UIColor greenColor];
-            break;
-            
-        case 2:
-            color = [UIColor redColor];
-            break;
-            
-        case 3:
-            color = [UIColor purpleColor];
-            break;
-            
-        default:
-            NSLog(@"getCardContents: invalid color: %d", card.color);
-            break;
-    }
-    
-    double strokeWidth = 0;
-    
-    switch (card.shading) {
-        case 1:
-            // solid shading
-            strokeWidth = -5;
-            break;
-            
-        case 2:
-            // open shading
-            strokeWidth = 5;
-            break;
-            
-        case 3:
-            // striped shading
-            strokeWidth = -5;
-            color = [color colorWithAlphaComponent:0.3];
-            break;
-    }
-    
-    [attrStr addAttributes:@{ NSStrokeWidthAttributeName:@(strokeWidth),NSStrokeColorAttributeName:color, NSForegroundColorAttributeName:color } range:range];
+    NSArray *colorPallette = @[[UIColor redColor], [UIColor colorWithRed:0.0 green:0.5 blue:0.0 alpha:1.0], [UIColor purpleColor]];
+    NSArray *alphaPallette = @[@0, @0.2, @1];
+    UIColor *cardOutlineColor = colorPallette[((SetCard *)card).color-1];
+    UIColor *cardColor = [cardOutlineColor colorWithAlphaComponent:(CGFloat)[alphaPallette[((SetCard *)card).shading-1] floatValue]];
+    NSDictionary *cardAttributes = @{NSForegroundColorAttributeName:cardColor, NSStrokeColorAttributeName:cardOutlineColor, NSStrokeWidthAttributeName:@-5};
+    NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:card.contents attributes:cardAttributes];
     
     return attrStr;
 }
 
-- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate
 {
-    // needs to be implemented
+    if ([cell isKindOfClass:[SetCardCollectionViewCell class]]) {
+        SetCardView *setCardView = ((SetCardCollectionViewCell *)cell).setCardView;
+        if ([card isKindOfClass:[SetCard class]]) {
+            SetCard *setCard = (SetCard *)card;
+            setCardView.symbol = setCard.symbol;
+            setCardView.number = setCard.number;
+            setCardView.color = setCard.color;
+            setCardView.shading = setCard.shading;
+            if (setCardView.faceUp != setCard.isFaceUp) {
+                if (animate) {
+                    [UIView transitionWithView:setCardView
+                                      duration:0.5
+                                       options:UIViewAnimationOptionTransitionFlipFromLeft
+                                    animations:^{
+                                        setCardView.faceUp = setCard.isFaceUp;
+                                    } completion:NULL];
+                } else {
+                    setCardView.faceUp = setCard.isFaceUp;
+                }
+            }
+            setCardView.alpha = setCard.isUnplayable ? 0.3 : 1.0;
+        }
+    }
 }
 
 //- (void)updateUI

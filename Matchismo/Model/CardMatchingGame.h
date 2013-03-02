@@ -18,8 +18,11 @@
 
 - (Card *)cardAtIndex:(NSUInteger)index;
 
+- (void)deleteCardsAtIndexes:(NSIndexSet *)indexes;
+
 @property (nonatomic) int cardsToMatch;
 @property (nonatomic, readonly) int score;
+@property (nonatomic, readonly) int cardsInPlay;
 @property (strong, nonatomic, readonly) MatchInfo *lastMatchInfo;
 
 @end

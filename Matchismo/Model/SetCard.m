@@ -12,10 +12,8 @@
 
 - (NSString *)contents
 {
-    NSString *symbol = @"";
-    for (int i = 0; i < self.rank; i++) {
-        symbol = [symbol stringByAppendingString:self.suit];
-    }
+    //NSString *symbol = [NSString stringWithFormat:@"%d/%d/%d/%d", self.number, self.symbol, self.color, self.shading];
+    NSString *symbol = [@"" stringByPaddingToLength:self.number withString: [[self class] validSymbols][self.symbol] startingAtIndex:0];
     
     return symbol;
 }
@@ -36,10 +34,10 @@
     int colorMatchCount = 1;
     
     for (SetCard *otherCard in otherCards) {
-        if ([otherCard.suit isEqualToString:self.suit]) {
+        if (otherCard.symbol == self.symbol) {
             symbolMatchCount++;
         }
-        if (otherCard.rank == self.rank) {
+        if (otherCard.number == self.number) {
             numberMatchCount++;
         }
         if (otherCard.color == self.color) {
@@ -76,19 +74,24 @@
     return matchInfo;
 }
 
-+ (NSArray *)validSuits
++ (NSArray *)validSymbols
 {
-    static NSArray *validSuits = nil;
-    if (!validSuits) validSuits = @[@"▲", @"●", @"■"];
-    return validSuits;
+    static NSArray *validSymbols = nil;
+    // valid symbols are: diamond (1), squiggle (2), oval (3)
+    if (!validSymbols) validSymbols = @[@"?", @"▲", @"■", @"●"];
+    return validSymbols;
 }
 
-+ (NSArray *)rankStrings
++ (NSUInteger)maxSymbol { return [[self validSymbols] count] - 1; }
+
++ (NSArray *)numberStrings
 {
-    static NSArray *rankStrings = nil;
-    if (!rankStrings) rankStrings = @[@"?", @"1", @"2", @"3"];
-    return rankStrings;
+    static NSArray *numberStrings = nil;
+    if (!numberStrings) numberStrings = @[@"?", @"1", @"2", @"3"];
+    return numberStrings;
 }
+
++ (NSUInteger)maxNumber { return [[self numberStrings] count] - 1; }
 
 + (NSArray *)colorStrings
 {

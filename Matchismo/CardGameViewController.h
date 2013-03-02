@@ -12,10 +12,12 @@
 
 @interface CardGameViewController : UIViewController
 
-- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card; // abstract
+- (void)updateCell:(UICollectionViewCell *)cell usingCard:(Card *)card animate:(BOOL)animate; // abstract
 - (Deck *)createDeck;
 
 @property (readonly, nonatomic) NSUInteger startingCardCount; // abstract
 @property (readonly, nonatomic) NSUInteger cardsToMatch; // abstract
 @property (readonly, nonatomic) NSString *gameType; // abstract
+@property (readonly, nonatomic) NSString *viewCellID; // abstract
+@property (readonly, nonatomic) BOOL shouldRemoveCardMatches; // abstract
 @end

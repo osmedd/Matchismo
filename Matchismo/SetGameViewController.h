@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 InterGuide Communications, Inc. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "CardGameViewController.h"
 
 @interface SetGameViewController : CardGameViewController

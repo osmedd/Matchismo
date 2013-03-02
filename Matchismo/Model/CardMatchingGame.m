@@ -28,6 +28,11 @@
     return _cardsToMatch;
 }
 
+- (int)cardsInPlay
+{
+    return [self.cards count];
+}
+
 - (MatchInfo *)lastMatchInfo
 {
     if (!_lastMatchInfo) _lastMatchInfo = [[MatchInfo alloc] init];
@@ -57,6 +62,11 @@
 - (Card *)cardAtIndex:(NSUInteger)index
 {
     return (index < self.cards.count ? self.cards[index] : nil);
+}
+
+- (void)deleteCardsAtIndexes:(NSIndexSet *)indexes
+{
+    [self.cards removeObjectsAtIndexes:indexes];
 }
 
 #define FLIP_COST -1

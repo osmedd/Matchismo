@@ -45,6 +45,8 @@
 		4A62F9F116D938CD006251A5 /* GameResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A62F9F016D938CD006251A5 /* GameResultViewController.m */; };
 		4A62F9F416D93BEB006251A5 /* GameResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A62F9F316D93BEB006251A5 /* GameResult.m */; };
 		4AB8A90B16BD850C00CDC1DD /* MatchInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AB8A90A16BD850C00CDC1DD /* MatchInfo.m */; };
+		4AC07DA116DD90EB0057E919 /* SetCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AC07DA016DD90EB0057E919 /* SetCardView.m */; };
+		4AC07DA416DDB6000057E919 /* SetCardCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AC07DA316DDB6000057E919 /* SetCardCollectionViewCell.m */; };
 		4AEF356216B9E10A0027EDE8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AEF356116B9E10A0027EDE8 /* UIKit.framework */; };
 		4AEF356416B9E10A0027EDE8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AEF356316B9E10A0027EDE8 /* Foundation.framework */; };
 		4AEF356616B9E10A0027EDE8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AEF356516B9E10A0027EDE8 /* CoreGraphics.framework */; };
@@ -111,6 +113,10 @@
 		4A62F9F316D93BEB006251A5 /* GameResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameResult.m; sourceTree = "<group>"; };
 		4AB8A90916BD850C00CDC1DD /* MatchInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchInfo.h; path = Model/MatchInfo.h; sourceTree = "<group>"; };
 		4AB8A90A16BD850C00CDC1DD /* MatchInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatchInfo.m; path = Model/MatchInfo.m; sourceTree = "<group>"; };
+		4AC07D9F16DD90EB0057E919 /* SetCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetCardView.h; sourceTree = "<group>"; };
+		4AC07DA016DD90EB0057E919 /* SetCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetCardView.m; sourceTree = "<group>"; };
+		4AC07DA216DDB6000057E919 /* SetCardCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetCardCollectionViewCell.h; sourceTree = "<group>"; };
+		4AC07DA316DDB6000057E919 /* SetCardCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetCardCollectionViewCell.m; sourceTree = "<group>"; };
 		4AEF355E16B9E10A0027EDE8 /* Matchismo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Matchismo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AEF356116B9E10A0027EDE8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4AEF356316B9E10A0027EDE8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -219,6 +225,10 @@
 				4A62F9F316D93BEB006251A5 /* GameResult.m */,
 				4A62F9E016CF34BA006251A5 /* SetGameViewController.h */,
 				4A62F9E116CF34BA006251A5 /* SetGameViewController.m */,
+				4AC07DA216DDB6000057E919 /* SetCardCollectionViewCell.h */,
+				4AC07DA316DDB6000057E919 /* SetCardCollectionViewCell.m */,
+				4AC07D9F16DD90EB0057E919 /* SetCardView.h */,
+				4AC07DA016DD90EB0057E919 /* SetCardView.m */,
 				4AEF357C16B9E10A0027EDE8 /* CardGameViewController.h */,
 				4AEF357D16B9E10A0027EDE8 /* CardGameViewController.m */,
 				4A10342016DA7CAF006EBA86 /* PlayingCardGameViewController.h */,
@@ -389,6 +399,8 @@
 				4A10342216DA7CAF006EBA86 /* PlayingCardGameViewController.m in Sources */,
 				4A10342516DA96B6006EBA86 /* PlayingCardView.m in Sources */,
 				4A10342816DA9A11006EBA86 /* PlayingCardCollectionViewCell.m in Sources */,
+				4AC07DA116DD90EB0057E919 /* SetCardView.m in Sources */,
+				4AC07DA416DDB6000057E919 /* SetCardCollectionViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
