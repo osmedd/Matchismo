@@ -11,6 +11,7 @@
 #import "MatchInfo.h"
 
 @interface CardGameViewController () <UICollectionViewDataSource>
+@property (strong, nonatomic) Deck *deck;
 @property (strong, nonatomic) CardMatchingGame *game;
 @property (strong, nonatomic) GameResult *gameResult;
 @property (nonatomic) int flipCount;
@@ -60,10 +61,18 @@
     return _gameResult;
 }
 
+- (Deck *)deck
+{
+    if (!_deck) {
+        _deck = [self createDeck];
+    }
+    return _deck;
+}
+
 - (CardMatchingGame *)game
 {
     if (!_game) {
-        _game = [[CardMatchingGame alloc] initWithCardCount:self.startingCardCount usingDeck:[self createDeck] usingCardsToMatch:self.cardsToMatch];
+        _game = [[CardMatchingGame alloc] initWithCardCount:self.startingCardCount usingDeck:self.deck usingCardsToMatch:self.cardsToMatch];
     }
     return _game;
 }
@@ -211,7 +220,12 @@
     self.flipHistory = nil;
     self.flipCount = 0;
     self.lastFlipLabel.text = @"";
-    [self.cardCollectionView reloadData];
+    if (self.deck.count < self.startingCardCount) {
+        self.deck = nil;
+    }
+    if (self.game.cardsInPlay > 0) {
+        [self.cardCollectionView reloadData];
+    }
     [self updateUI];
 }
 
@@ -222,6 +236,27 @@
         //NSLog(@"Showing flip history entry: %d (out of %d entries)", historyIndex, [self.flipHistory count]);
         self.lastFlipLabel.attributedText = self.flipHistory[historyIndex];
     }
+}
+
+#define DEALMORECARDS_COUNT 3
+
+- (IBAction)dealMoreCards:(UIButton *)sender {
+    BOOL outOfCards = NO;
+    for (int i = 0; !outOfCards && i < DEALMORECARDS_COUNT; i++) {
+        Card *card = [self.deck drawRandomCard];
+        if (card != nil) {
+            [self.game addCardToGame:card];
+        } else {
+            outOfCards = YES;
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"No cards left..." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
+    }
+    [self.cardCollectionView reloadData];
+    if (self.game.cardsInPlay > 0) {
+        [self.cardCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.game cardsInPlay]-1 inSection:VIEW_CARD_SECTION] atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
+    }
+    [self updateUI];
 }
 
 @end

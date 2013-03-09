@@ -20,6 +20,8 @@
 
 - (void)deleteCardsAtIndexes:(NSIndexSet *)indexes;
 
+- (void)addCardToGame:(Card *)card;
+
 @property (nonatomic) int cardsToMatch;
 @property (nonatomic, readonly) int score;
 @property (nonatomic, readonly) int cardsInPlay;

@@ -14,6 +14,11 @@
 
 @implementation Deck
 
+- (NSUInteger)count
+{
+    return [self.cards count];
+}
+
 - (NSMutableArray *)cards
 {
     if (!_cards) _cards = [[NSMutableArray alloc] init];

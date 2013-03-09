@@ -59,6 +59,13 @@
     return self;
 }
 
+- (void)addCardToGame:(Card *)card
+{
+    if (card != nil) {
+        [self.cards addObject:card];
+    }
+}
+
 - (Card *)cardAtIndex:(NSUInteger)index
 {
     return (index < self.cards.count ? self.cards[index] : nil);

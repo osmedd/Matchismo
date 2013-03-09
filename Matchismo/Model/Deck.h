@@ -11,6 +11,8 @@
 
 @interface Deck : NSObject
 
+@property (readonly) NSUInteger count;
+
 - (void)addCard:(Card *)card atTop:(BOOL)atTop;
 
 - (Card *)drawRandomCard;

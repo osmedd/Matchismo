@@ -267,22 +267,22 @@
 		4AEF358716B9EDF20027EDE8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4A62F9E316D452E9006251A5 /* SetCard.h */,
-				4A62F9E416D452E9006251A5 /* SetCard.m */,
 				4A4777B516BACE5700373E1F /* CardMatchingGame.h */,
 				4A4777B616BACE5700373E1F /* CardMatchingGame.m */,
+				4AB8A90916BD850C00CDC1DD /* MatchInfo.h */,
+				4AB8A90A16BD850C00CDC1DD /* MatchInfo.m */,
 				4AEF358416B9EDAC0027EDE8 /* Card.h */,
 				4AEF358516B9EDAC0027EDE8 /* Card.m */,
-				4AEF358816B9EE2D0027EDE8 /* Deck.h */,
 				4AEF358B16B9F6650027EDE8 /* PlayingCard.h */,
+				4AEF358C16B9F6650027EDE8 /* PlayingCard.m */,
+				4A62F9E316D452E9006251A5 /* SetCard.h */,
+				4A62F9E416D452E9006251A5 /* SetCard.m */,
+				4AEF358816B9EE2D0027EDE8 /* Deck.h */,
+				4AEF358916B9EE2D0027EDE8 /* Deck.m */,
 				4AEF358E16B9FB860027EDE8 /* PlayingCardDeck.h */,
 				4AEF358F16B9FB860027EDE8 /* PlayingCardDeck.m */,
 				4A62F9E616D45EC3006251A5 /* SetCardDeck.h */,
 				4A62F9E716D45EC3006251A5 /* SetCardDeck.m */,
-				4AEF358C16B9F6650027EDE8 /* PlayingCard.m */,
-				4AB8A90916BD850C00CDC1DD /* MatchInfo.h */,
-				4AB8A90A16BD850C00CDC1DD /* MatchInfo.m */,
-				4AEF358916B9EE2D0027EDE8 /* Deck.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
